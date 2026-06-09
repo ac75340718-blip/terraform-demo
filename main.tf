@@ -1,4 +1,4 @@
-# 1. 定义 Provider（告诉 Terraform 我们要操作 AWS）
+# 1. 定义 Provider
 terraform {
   required_providers {
     aws = {
@@ -8,13 +8,15 @@ terraform {
   }
 }
 
+# 2. 定义 Provider (统一使用东京区域)
 provider "aws" {
-  region = "us-east-1" # 你可以根据需要修改区域
+  region = "ap-northeast-1" 
 }
 
-# 2. 定义资源：创建一个 S3 存储桶
+# 3. 定义资源 (仅保留一个)
 resource "aws_s3_bucket" "my_demo_bucket" {
-  bucket = "my-unique-terraform-demo-bucket-20260609" # 注意：S3桶名必须全局唯一，请修改为你自己的名字
+  # 请确保这个名字在全世界范围内没有被别人占用
+  bucket = "my-unique-test-bucket-2026-06-09-xyz" 
   
   tags = {
     Name        = "My Terraform Demo Bucket"
@@ -22,18 +24,8 @@ resource "aws_s3_bucket" "my_demo_bucket" {
   }
 }
 
-# 3. 定义输出：部署完成后，打印出桶的名称
+# 4. 定义输出
 output "bucket_name" {
   value       = aws_s3_bucket.my_demo_bucket.bucket
   description = "The name of the created S3 bucket"
-}
-
-
-provider "aws" {
-  region = "ap-northeast-1" # 东京区域
-}
-
-resource "aws_s3_bucket" "my_demo_bucket" {
-  # 注意：bucket名字必须在全世界是唯一的，如果报错，请换个名字
-  bucket = "my-unique-test-bucket-2026-06-09-xyz" 
 }
