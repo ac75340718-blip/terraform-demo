@@ -27,3 +27,13 @@ output "bucket_name" {
   value       = aws_s3_bucket.my_demo_bucket.bucket
   description = "The name of the created S3 bucket"
 }
+
+
+provider "aws" {
+  region = "ap-northeast-1" # 东京区域
+}
+
+resource "aws_s3_bucket" "my_demo_bucket" {
+  # 注意：bucket名字必须在全世界是唯一的，如果报错，请换个名字
+  bucket = "my-unique-test-bucket-2026-06-09-xyz" 
+}
