@@ -1,10 +1,3 @@
-terraform {
-  required_providers {
-    null = {
-      source = "hashicorp/null"
-      version = "3.2.1"
-    }
-  }
+output "hello_world" {
+  value = "这是我添加的新文本配置"
 }
-
-resource "null_resource" "example" {}
