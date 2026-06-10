@@ -1,31 +1,28 @@
 # 1. 定义 Provider
 terraform {
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
+    databricks = {
+      source = "databricks/databricks"
     }
   }
 }
 
-# 2. 定义 Provider (统一使用东京区域)
-provider "aws" {
-  region = "ap-northeast-1" 
+# 2. 定义 Databricks Provider
+provider "databricks" {
+  # 如果你在 Databricks Workspace 内部通过 Token 运行，
+  # 这些 host 和 token 可以留空，会自动获取
+  # 如果在外部运行，需要填入 host 和 token
 }
 
-# 3. 定义资源 (仅保留一个)
-resource "aws_s3_bucket" "my_demo_bucket" {
-  # 请确保这个名字在全世界范围内没有被别人占用
-  bucket = "my-unique-test-bucket-2026-06-09-xyz" 
-  
-  tags = {
-    Name        = "My Terraform Demo Bucket"
-    Environment = "Dev"
-  }
+# 3. 定义一个示例资源 (例如创建一个 Notebook)
+resource "databricks_notebook" "my_demo_notebook" {
+  path     = "/Users/your-email@example.com/Demo-Notebook"
+  language = "PYTHON"
+  content  = base64encode("print('Hello Databricks from Terraform!')")
 }
 
 # 4. 定义输出
-output "bucket_name" {
-  value       = aws_s3_bucket.my_demo_bucket.bucket
-  description = "The name of the created S3 bucket"
+output "notebook_path" {
+  value       = databricks_notebook.my_demo_notebook.path
+  description = "The path of the created notebook"
 }
