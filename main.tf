@@ -1,29 +1,47 @@
-# 1. 定义 Provider
+# 1. 定义两个 Provider 的要求
 terraform {
   required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
     databricks = {
       source = "databricks/databricks"
     }
   }
 }
 
-# 2. 定义 Databricks Provider
-# 注意：HOST 和 TOKEN 请确保已经在 Terraform 的 Variables 中设置过
-provider "databricks" {
+# 2. 定义 AWS Provider (指定区域)
+provider "aws" {
+  region = "ap-northeast-1" 
 }
 
-# 3. 定义 Databricks Notebook 资源
+# 3. 定义 Databricks Provider
+provider "databricks" {
+  # 这里保持空，确保环境变量 DATABRICKS_HOST 和 TOKEN 已在 Terraform Cloud 设置好
+}
+
+# 4. 定义资源：AWS S3 Bucket
+resource "aws_s3_bucket" "my_demo_bucket" {
+  bucket = "my-unique-test-bucket-2026-06-09-xyz" 
+  tags = {
+    Name        = "My Terraform Demo Bucket"
+    Environment = "Dev"
+  }
+}
+
+# 5. 定义资源：Databricks Notebook
 resource "databricks_notebook" "my_demo_notebook" {
-  # 请将路径中的邮箱替换为你 Databricks 登录的邮箱
   path     = "/Users/your-email@example.com/Demo-Notebook"
   language = "PYTHON"
-  
-  # 使用 content_base64 解决之前的报错问题
   content_base64 = base64encode("print('Hello Databricks from Terraform!')")
 }
 
-# 4. 定义输出
+# 6. 定义输出
+output "bucket_name" {
+  value       = aws_s3_bucket.my_demo_bucket.bucket
+}
+
 output "notebook_path" {
   value       = databricks_notebook.my_demo_notebook.path
-  description = "The path of the created notebook"
 }
