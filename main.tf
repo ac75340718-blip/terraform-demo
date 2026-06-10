@@ -8,17 +8,18 @@ terraform {
 }
 
 # 2. 定义 Databricks Provider
+# 注意：HOST 和 TOKEN 请确保已经在 Terraform 的 Variables 中设置过
 provider "databricks" {
-  # 如果你在 Databricks Workspace 内部通过 Token 运行，
-  # 这些 host 和 token 可以留空，会自动获取
-  # 如果在外部运行，需要填入 host 和 token
 }
 
-# 3. 定义一个示例资源 (例如创建一个 Notebook)
+# 3. 定义 Databricks Notebook 资源
 resource "databricks_notebook" "my_demo_notebook" {
+  # 请将路径中的邮箱替换为你 Databricks 登录的邮箱
   path     = "/Users/your-email@example.com/Demo-Notebook"
   language = "PYTHON"
-  content  = base64encode("print('Hello Databricks from Terraform!')")
+  
+  # 使用 content_base64 解决之前的报错问题
+  content_base64 = base64encode("print('Hello Databricks from Terraform!')")
 }
 
 # 4. 定义输出
